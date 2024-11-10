@@ -34,7 +34,7 @@ sudo i2cdetect -y 1
 ### Сборка Docker-образа
 
 ```bash
-docker build -t bme280-metrics-pusher:v0.0.1 .
+sudo docker build -t bme280-metrics-pusher:v0.0.1 .
 ```
 ### Запуск контейнера
 
