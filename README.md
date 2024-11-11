@@ -3,7 +3,7 @@
 Этот проект представляет собой Python-скрипт для Raspberry Pi, который считывает данные с датчика BME280 и отправляет метрики температуры, давления и влажности на Prometheus Pushgateway. Скрипт упакован в Docker-контейнер для удобства развертывания и работы.
 
 ## Схема
-![image](https://github.com/user-attachments/assets/fbb7e4a2-3975-4c89-a073-35c688832c7f)
+![image](https://github.com/user-attachments/assets/56bd5792-04dd-48db-b623-e2fee9c1a9b6)
 
 ## Описание
 
