@@ -42,12 +42,7 @@ sudo docker build -t bme280-metrics-pusher:v0.0.1 .
 ### Запуск контейнера
 
 ```bash
-sudo docker run -d \
-    --name bme280-metrics-pusher \
-    --device /dev/i2c-1 \
-    -e PUSHGATEWAY_URL=http://<ip-адрес>:<порт> \
-    --restart unless-stopped \
-    bme280-metrics-pusher:v0.0.1
+sudo docker run -d --name bme280-metrics-pusher --device /dev/i2c-1 -e PUSHGATEWAY_URL=http://<IP>:<порт> --restart always bme280-metrics-pusher:v0.0.1
 ```
 - Замените `<ip-адрес>:<порт>` на адрес вашего Prometheus Pushgateway.
 - Флаг `--device /dev/i2c-1` позволяет контейнеру получить доступ к I2C интерфейсу Raspberry Pi.

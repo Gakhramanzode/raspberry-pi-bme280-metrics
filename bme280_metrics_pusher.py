@@ -9,7 +9,7 @@ import os
 
 # Настройка логирования
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)]
 )
@@ -35,16 +35,20 @@ if not PUSHGATEWAY_URL:
 # Функция для отправки метрик на Pushgateway
 def push_metrics(job_name="meteo_server"):
     try:
+        logging.debug("Подготовка к отправке метрик")
         push_to_gateway(PUSHGATEWAY_URL, job=job_name, registry=registry)
         logging.info("Метрики успешно отправлены на Pushgateway")
     except Exception as e:
         PUSH_METRICS_ERRORS.inc()  # Увеличиваем счетчик ошибок отправки метрик
         logging.error(f"Ошибка при отправке метрик на Pushgateway: {e}")
+        sys.exit(1)
 
 # Функция для проверки устройства по адресу 0x76
 def check_device_address(address=0x76):
     try:
+        logging.debug(f"Проверка устройства на адресе 0x{address:02x}")
         result = subprocess.run(["i2cdetect", "-y", "1"], capture_output=True, text=True)
+        logging.debug(f"Результат i2cdetect: {result.stdout}")
         if f"{address:02x}" not in result.stdout:
             logging.error(f"Устройство по адресу 0x{address:02x} не найдено. Проверьте подключение.")
             return False
@@ -69,11 +73,14 @@ def initialize_sensor():
 # Чтение данных с датчика и обновление метрик
 def get_weather_data(bme280):
     try:
+        logging.debug("Перед обновлением датчика")
         # Принудительная задержка для стабилизации показаний
         time.sleep(1)
         bme280.update_sensor()
+        logging.debug("После первого обновления датчика")
         time.sleep(0.5)
         bme280.update_sensor()
+        logging.debug("После второго обновления датчика")
 
         temperature = bme280.get_temperature()
         pressure = bme280.get_pressure()
@@ -88,6 +95,7 @@ def get_weather_data(bme280):
     except Exception as e:
         SENSOR_READ_ERRORS.inc()  # Увеличиваем счетчик ошибок чтения данных
         logging.error(f"Ошибка при чтении данных с датчика: {e}")
+        sys.exit(1)
 
 # Функция для периодической отправки метрик
 def metric_push_loop(bme280, interval=60):
